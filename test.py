@@ -1,6 +1,4 @@
-"""
-python3.5 ：yangl@lamda.nju.edu.cn
-"""
+
 from sklearn.utils import shuffle
 
 from learner.cascade import Cascade
