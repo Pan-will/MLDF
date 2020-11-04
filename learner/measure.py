@@ -338,6 +338,7 @@ def compute_auc_vec(y_prob, label):
 
 
 def do_metric(y_prob, label, threshold):
+    # 和阈值比较
     y_predict = y_prob > threshold
     ranking_loss = compute_ranking_loss(y_prob, label)
     # print(ranking_loss)

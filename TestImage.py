@@ -46,7 +46,8 @@ if __name__ == '__main__':
     dataset = "image"
     # 初始化数据集、标签集、测试数据标签集
     train_data, train_label, test_data, test_label = make_data(dataset)
-    # 构造森林，将另个森林级联，最大层数设为10，5折交叉验证
+
+    # 构造森林，将另个森林级联，最大层数设为10，5重交叉验证
     model = Cascade(dataset, max_layer=10, num_forests=2, n_fold=5, step=3)
     # 训练森林，传入训练集、训练标签、指标名称、每个森林中的树的数量设为40
     model.train(train_data, train_label, "hamming loss", n_estimators=40)

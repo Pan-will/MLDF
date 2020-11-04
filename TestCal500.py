@@ -4,7 +4,7 @@ import numpy as np
 
 from sklearn.utils import shuffle
 
-from learner.cascade import Cascade
+from learner.CascadeForCal500 import Cascade
 from learner.measure import *
 
 
@@ -39,7 +39,7 @@ def load_csv():
     with open(p, encoding='utf-8') as f:
         FullData = np.loadtxt(f, str, delimiter=",")
 
-    label = FullData[0]
+    labels = FullData[0]
     # print("打印标签集的规模：", label.shape[0])
     data = FullData[1:]
     # print("打印数据集的规模：", data.shape[0], data.shape[1])
@@ -47,36 +47,39 @@ def load_csv():
 
     # 取数据集的行数，即是实例数
     num_samples = data.shape[0]
+    # 将实例随机划分成训练集和测试集
     # 训练集索引list，测试集索引list——每个集合251
+    # 这里的返回值是两个list,存放的是随机选取的实例的下标
     train_index, test_index = shuffle_index(num_samples)
-    print("57行测试打印训练索引list、测试索引list：", train_index, test_index)
-    # 选取初始数据集的一行作为训练数据？？？变量名有点迷
-    train_data = data[train_index]
 
-    num_labels = label.shape[0]
-    train_label = label[num_labels-1]
+    # 按照随机抽取的训练集，准备好训练实例集合
+    train_data=[]
+    for data_index in train_index:
+        train_data.append(data[data_index])
 
-    test_data = data[test_index]
-    print("66行打印：", len(test_data), test_data)
+    # 按照随机抽取的测试集，准备好测试实例集合
+    test_data = []
+    for test_index in test_index:
+        train_data.append(data[test_index])
 
-    test_label = label
-
-    return [train_data, train_label, test_data, test_label]
+    # 返回值是训练数据、测试数据、标签数
+    return [train_data, test_data, labels]
 
 
 if __name__ == '__main__':
     dataset = "CAL500"
-    # 初始化数据集、标签集、测试数据标签集
-    train_data, train_label, test_data, test_label = load_csv()
+    # 初始化数据集、测试数据集、标签集
+    train_data, test_data, labels = load_csv()
 
     # 构造森林，将另个森林级联，最大层数设为10，5折交叉验证
     model = Cascade(dataset, max_layer=10, num_forests=2, n_fold=5, step=3)
 
     # 训练森林，传入训练集、训练标签、指标名称、每个森林中的树的数量设为40
-    model.train(train_data, train_label, "hamming loss", n_estimators=40)
+    model.train(train_data, labels, "hamming loss", n_estimators=40)
 
     test_prob = model.predict(test_data, "hamming loss")
-    value = do_metric(test_prob, test_label, 0.5)
+
+    value = do_metric(test_prob, labels, 0.5)
     meatures = ["hamming loss", "one-error", "coverage", "ranking loss", "average precision", "macro-auc"]
     res = zip(meatures, value)
     for item in res:
