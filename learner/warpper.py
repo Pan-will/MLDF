@@ -39,10 +39,12 @@ class KfoldWarpper:
             y_train = train_label[train_index, :]
 
             # training fold-th layer
-            # 每个森林树的数量=40，森林数量=2，标签数=5，步数=3，层序号，交叉验证倍数=5
+            # 每个森林树的数量=40，森林数量=2，标签数=5，步数=3，层序号
             layer = Layer(self.n_estimators, self.num_forests, self.num_labels, self.step, self.layer_index, fold)
 
+            # layer层的训练，参数：训练集，对应标签
             layer.train(X_train, y_train)
+
             self.model.append(layer)
             fold += 1
             prob[test_index], prob_concatenate[:, test_index, :] = layer.predict(X_val)

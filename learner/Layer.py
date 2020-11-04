@@ -2,7 +2,6 @@ import numpy as np
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.ensemble import RandomForestClassifier
 
-
 class Layer:
     def __init__(self, n_estimators, num_forests, num_labels, step=3, layer_index=0, fold=0):
         """
@@ -11,7 +10,7 @@ class Layer:
         :param num_labels: 标签数量
         :param step: 步数=3
         :param layer_index: 层序号
-        :param fold: 交叉验证倍数
+        :param fold:
         """
         self.n_estimators = n_estimators
         self.num_labels = num_labels
@@ -27,9 +26,9 @@ class Layer:
         :param train_label: 训练数据对应的标签
         :return:
         """
-        # 在第一层中，每个森林中有40棵树，然后比上一层增加20棵树，直到树数达到100，最多100棵树
+        # 在第一层中，每个森林中有40棵树，然后比上一层增加20棵树，直到树数达到100，最多100棵树；
         n_estimators = min(20 * self.layer_index + self.n_estimators, 100)
-        # 最大深度
+        # 最大深度 = 步数*层序号 + 步数
         max_depth = self.step * self.layer_index + self.step
         # 遍历森林块
         for forest_index in range(self.num_forests):
@@ -39,7 +38,8 @@ class Layer:
                                              criterion="gini",
                                              max_depth=max_depth,
                                              n_jobs=-1)
-            # 第奇数个森林，用ExtraTrees分类器
+            # 第奇数个森林，用极端随机森林分类器
+            # 一般情况下，极端随机森林分类器在分类精度和训练时间等方面都要优于随机森林分类器。
             else:
                 clf = ExtraTreesClassifier(n_estimators=n_estimators,
                                            criterion="gini",

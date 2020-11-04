@@ -9,3 +9,5 @@ print("$"*44)
 label = np.load("image_label.npy")
 print(label)
 print(len(label[0]))
+
+

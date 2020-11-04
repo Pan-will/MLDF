@@ -122,7 +122,7 @@ class Cascade:
             # 第一层
             if layer_index == 0:
                 best_train_prob = prob
-                # 指标名称，阈值初值为0.5
+                # 指标名称，训练标签集，阈值初值为0.5
                 pre_metric = compute_supervise_vec(supervise, best_train_prob, train_label, 0.5)
             # 非第一层
             else:
