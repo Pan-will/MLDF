@@ -115,7 +115,7 @@ class Cascade:
 
             # 参数：森林数=2，每个森里中的树的数量=40，交叉验证的倍数=5，层序号（1~20，for循环ing），步数=3
             kfoldwarpper = KfoldWarpper(self.num_forests, n_estimators, self.n_fold, kf, layer_index, self.step)
-
+            print("cascade里看看kf：",kf)
             prob, prob_concatenate = kfoldwarpper.train(train_data, train_label)
 
             self.model.append(kfoldwarpper)
@@ -133,9 +133,9 @@ class Cascade:
                     indicator = now_metric > pre_metric
 
                 if np.sum(indicator) > 0:
-
+                    # 计算置信度
                     confidence = self.compute_confidence(supervise, prob)
-
+                    # 取置信度均值作为阈值
                     eta_t = np.mean(confidence[indicator])
                     train_indicator = confidence < eta_t
                     if supervise == "hamming loss" or supervise == "macro_auc":

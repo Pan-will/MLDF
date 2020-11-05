@@ -23,7 +23,7 @@ class KfoldWarpper:
             prob: array, whose shape is (num_samples, num_labels)，一个数组，实例数是行数，标签数是列数
             prob_concatenate
         """
-        # 标签数是训练集的列数
+        # 标签数是训练标签集的列数
         self.num_labels = train_label.shape[1]
         # 实例数、特征数分别是训练集的行数和列数
         num_samples, num_features = train_data.shape
@@ -33,7 +33,10 @@ class KfoldWarpper:
         prob_concatenate = np.empty([self.num_forests, num_samples, self.num_labels])
 
         fold = 0
+        # train_data维度：（1000, 304）
         for train_index, test_index in self.kf:
+            # train_data是三级嵌套list，切片有三个参数，第一个是块下标，后面两个跟二维数组一样
+            # 也就是每趟循环取一个训练数据、测试数据、训练数据对应标签
             X_train = train_data[train_index, :]
             X_val = train_data[test_index, :]
             y_train = train_label[train_index, :]

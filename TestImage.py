@@ -53,6 +53,7 @@ if __name__ == '__main__':
     model.train(train_data, train_label, "hamming loss", n_estimators=40)
 
     test_prob = model.predict(test_data, "hamming loss")
+
     value = do_metric(test_prob, test_label, 0.5)
     meatures = ["hamming loss", "one-error", "coverage", "ranking loss", "average precision", "macro-auc"]
     res = zip(meatures, value)

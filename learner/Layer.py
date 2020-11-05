@@ -51,6 +51,7 @@ class Layer:
 
     # 预测
     def predict(self, test_data):
+        # 设置空数组，
         predict_prob = np.zeros([self.num_forests, test_data.shape[0], self.num_labels])
 
         for forest_index, clf in enumerate(self.model):

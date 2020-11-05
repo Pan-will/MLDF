@@ -83,8 +83,7 @@ def compute_supervise(supervise, y_prob, label, threshold):
 def compute_supervise_vec(supervise, y_prob, label, threshold):
     predict = y_prob > threshold
     if supervise == "ranking loss":
-        temp_ranking_loss = compute_ranking_loss_vec(
-            y_prob, label)  # prob / y_prob
+        temp_ranking_loss = compute_ranking_loss_vec(y_prob, label)  # prob / y_prob
         value = temp_ranking_loss
     elif supervise == "hamming loss":
         temp_hamming_loss = compute_hamming_loss_vec(predict, label)
@@ -211,7 +210,7 @@ def compute_ranking_loss(y_prob, label):
 
     return loss * 1.0 / num_samples
 
-
+# 计算排名损失
 def compute_ranking_loss_vec(y_prob, label):
     num_samples, num_labels = label.shape
     loss = np.zeros(num_samples)
@@ -336,7 +335,7 @@ def compute_auc_vec(y_prob, label):
             valid_labels += 1
     return macro_auc
 
-
+# A metric is a function that is used to judge the performance of your model.
 def do_metric(y_prob, label, threshold):
     # 和阈值比较
     y_predict = y_prob > threshold
