@@ -1,3 +1,6 @@
+"""
+层类
+"""
 import numpy as np
 from sklearn.ensemble import ExtraTreesClassifier
 from sklearn.ensemble import RandomForestClassifier
