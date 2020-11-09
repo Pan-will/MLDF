@@ -15,12 +15,13 @@ def shuffle_index(num_samples):
     test_index = a[length:]
     return [train_index, test_index]
 
-train_data_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\yeast_data.csv'
-train_label_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\yeast_label.csv'
 
-with open(train_data_csv, encoding='utf-8') as f:
+data_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\scene_data.csv'
+label_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\scene_label.csv'
+
+with open(data_csv, encoding='utf-8') as f:
     data = np.loadtxt(f, str, delimiter=",")
-with open(train_label_csv, encoding='utf-8') as f:
+with open(label_csv, encoding='utf-8') as f:
     label = np.loadtxt(f, str, delimiter=",")
 
 # 将数据label强制转换为指定的类型，astype函数是在副本上进行，并非修改原数组。
@@ -28,8 +29,8 @@ with open(train_label_csv, encoding='utf-8') as f:
 label = label.astype("int")
 
 
-print("train_data矩阵信息：", type(data[0]), data[0].shape, data.shape)
-print("train_label矩阵信息：", type(label[0]), label[0].shape, label.shape)
+print("data矩阵信息：", type(data[0]), data[0].shape, data.shape)
+print("label矩阵信息：", type(label[0]), label[0].shape, label.shape)
 
 num_samples = len(data)
 print("实例数：", len(data))
