@@ -19,17 +19,24 @@ def shuffle_index(num_samples):
 
 
 # 加载数据和标签
+# image数据集一共2000条数据，每条数据5个标签
+# data矩阵shape是2000，294；label矩阵shape是2000，5
 def make_data(dataset):
     data = np.load("dataset/{}_data.npy".format(dataset))
     label = np.load("dataset/{}_label.npy".format(dataset))
 
-    print("以下是data：", "\n", data)
-    # astype转换数据类型：将标签转成int类型
+    print("data矩阵信息：", data.shape, type(data[0]), data[0].shape)
+    # 将数据label强制转换为指定的类型，astype函数是在副本上进行，并非修改原数组。
+    # 从文件中load出来的数据类型是“class 'numpy.int16'”类型，需要进行类型转化
     label = label.astype("int")
-    print("以下是label,强制转int后：", "\n", label)
-    # 取数据集的行数，即是实例数
+    print("label矩阵信息：", label.shape, type(label[0]), label[0].shape)
+    # 取数据集的行数，即是实例数：2000个实例
     num_samples = data.shape[0]
-    # 训练集索引，测试集索引
+
+    # 用shuffle_index函数将2000这个整数随机划分成两个长为1000的list，list中的元素是2000以内的整数
+    # data是<class 'numpy.ndarray'>的二维矩阵，将上一步的list传入，会将data中按list中的元素按行取出
+    # 这两步就是将（2000，294）的data二维矩阵划分成了两个（1000，294）的二维矩阵，分别代表训练集和测试集
+    # 针对label这个（2000，5）的二维矩阵也是这么操作，而且采集时用的是同一组list，保证实例和标签对应
     train_index, test_index = shuffle_index(num_samples)
     train_data = data[train_index]
     train_label = label[train_index]
@@ -41,7 +48,9 @@ def make_data(dataset):
     # print("test_label", test_label)
     return [train_data, train_label, test_data, test_label]
 
-
+"""
+数据集文件：data、label文件
+"""
 if __name__ == '__main__':
     dataset = "image"
     # 初始化数据集、标签集、测试数据标签集

@@ -1,4 +1,4 @@
-import gcforest
+from gcforest import gcforest
 import numpy as np
 from sklearn.metrics import accuracy_score
 import pickle
@@ -8,8 +8,8 @@ import pandas as pd
 
 train = pd.read_csv("D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\yeast-train.csv", header=None, index_col=False)
 test = pd.read_csv("D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\yeast-test.csv", header=None, index_col=False)
-print("训练集维度：",train.shape)
-print("测试集维度：",test.shape)
+print("训练集维度：", train.shape)
+print("测试集维度：", test.shape)
 
 # 数据转换
 label = train.loc[:, [8]].values.reshape(-1)
@@ -29,8 +29,10 @@ n_jobs: int (default=1)随机森林训练和预测的并行数量，如果等于
 
 # 训练的配置，采用默认的模型-即原库代码实现方式
 def get_toy_config():
+    # 两个字典
     config = {}
     ca_config = {}
+    #
     ca_config["random_state"] = 0  # 0 or 1
     ca_config["max_layers"] = 100  # 最大的层数，layer对应论文中的level
     ca_config["early_stopping_rounds"] = 3  # 如果出现某层的三层以内的准确率都没有提升，层中止
