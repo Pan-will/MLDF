@@ -66,14 +66,14 @@ def load_csv():
     test_label = label[test_index]
 
 
-    print("加载yeast数据集完成！！!")
+    print("加载scene数据集完成！！!")
 
     # 返回值是训练数据、测试数据、标签数
     return [train_data, train_label, test_data, test_label]
 
 
 if __name__ == '__main__':
-    dataset = "yeast"
+    dataset = "scene"
     # 初始化数据集、测试数据集、标签集
     train_data, train_label, test_data, test_label = load_csv()
 
