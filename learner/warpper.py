@@ -25,24 +25,33 @@ class KfoldWarpper:
         """
         # 标签数是训练标签集的列数
         self.num_labels = train_label.shape[1]
+
         # 实例数、特征数分别是训练集的行数和列数
         num_samples, num_features = train_data.shape
-        # 构造一个空数组，实例数为行数，标签数为列数
+
+        # 构造一个二维矩阵，规模是（实例数，标签数），构造的矩阵不为空
         prob = np.empty([num_samples, self.num_labels])
-        # print(prob)
+        # 构造一个二维矩阵，规模是（森林数，实例数，标签数）=（2，实例数，标签数），构造的矩阵不为空
         prob_concatenate = np.empty([self.num_forests, num_samples, self.num_labels])
 
         fold = 0
         # train_data维度：（1000, 304）
         for train_index, test_index in self.kf:
-            # train_data是三级嵌套list，切片有三个参数，第一个是块下标，后面两个跟二维数组一样
+            # train_data的shape：(1204, 294)，切片有三个参数，第一个是块下标，后面两个跟二维数组一样
             # 也就是每趟循环取一个训练数据、测试数据、训练数据对应标签
+            """
+            原始的数据集划成了4份：train_data（251，68）、test_data（251，68）、train_label（251，174）、test_label（251，174）；
+            这里又把data部分划成了(167, 68)、(84, 68)；label部分划成了(167, 174)、(84, 174)
+            X_train: <class 'numpy.ndarray'> (167, 68) 167
+            X_val <class 'numpy.ndarray'> (84, 68) 84
+            y_train <class 'numpy.ndarray'> (167, 174) 167
+            """
             X_train = train_data[train_index, :]
             X_val = train_data[test_index, :]
             y_train = train_label[train_index, :]
 
-            # training fold-th layer
-            # 每个森林树的数量=40，森林数量=2，标签数=5，步数=3，层序号
+            # 构建第fold个层类
+            # 构建层类，参数列表：每个森林树的数量=40，森林数量=2，标签数=5（不同数据集，标签数不同），步数=3，层序号，交叉验证倍数
             layer = Layer(self.n_estimators, self.num_forests, self.num_labels, self.step, self.layer_index, fold)
 
             # layer层的训练，参数：训练集，对应标签

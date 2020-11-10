@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 def mlknn(train, test, id, label_columns, k):
     smooth = 1.0
     # 计算每个标签出现的概率
@@ -123,6 +124,7 @@ def mlknn(train, test, id, label_columns, k):
         if correct_col == len(label_columns):
             correct_rec += 1
     print('测试集标签识别准确率', correct_rec * 1.0 / test.shape[0])
+
 
 if __name__ == '__main__':
     s = mlknn()
