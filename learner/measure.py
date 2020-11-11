@@ -80,8 +80,11 @@ def compute_supervise(supervise, y_prob, label, threshold):
     return value
 
 
+# 计算指标向量
 def compute_supervise_vec(supervise, y_prob, label, threshold):
+    # predict矩阵信息： <class 'numpy.ndarray'> (251, 174) 251
     predict = y_prob > threshold
+    # print("measure测试：", type(predict), predict.shape, len(predict))
     if supervise == "ranking loss":
         temp_ranking_loss = compute_ranking_loss_vec(y_prob, label)  # prob / y_prob
         value = temp_ranking_loss
@@ -118,7 +121,9 @@ def update_supervise(supervise, value_pool, layer_index, y_prob, label, threshol
 
 # 计算准确率
 def compute_accuracy(pred_label, label):
+    # 先取得实例数
     num_samples = len(label)
+    # 计算准确率
     acc = sum(label == pred_label) * 1.0 / num_samples
     return acc
 
@@ -158,6 +163,7 @@ def compute_rank(y_prob):
 
 # example based measure
 def compute_hamming_loss(pred_label, label):
+    # 先计算准确率
     acc = compute_accuracy(pred_label, label)
     return 1 - acc.mean()
 
@@ -210,10 +216,13 @@ def compute_ranking_loss(y_prob, label):
 
     return loss * 1.0 / num_samples
 
+
 # 计算排名损失
 def compute_ranking_loss_vec(y_prob, label):
     num_samples, num_labels = label.shape
+    # 初始化损失矩阵，规模与实例数相同
     loss = np.zeros(num_samples)
+    print("初始化排名损失矩阵,shape是：", loss.shape)
     for i in range(num_samples):
         prob_positive = y_prob[i, label[i, :] > 0.5]
         prob_negative = y_prob[i, label[i, :] < 0.5]
@@ -334,6 +343,7 @@ def compute_auc_vec(y_prob, label):
             macro_auc[i] = temp
             valid_labels += 1
     return macro_auc
+
 
 # A metric is a function that is used to judge the performance of your model.
 def do_metric(y_prob, label, threshold):

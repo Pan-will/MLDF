@@ -59,6 +59,7 @@ class KfoldWarpper:
 
             self.model.append(layer)
             fold += 1
+            # 做预测，参数是新划分的test矩阵，shape是（84，68），返回值是[预测值针对森林数取得均值， 按分类器存放的预测值]
             prob[test_index], prob_concatenate[:, test_index, :] = layer.predict(X_val)
         return [prob, prob_concatenate]
 

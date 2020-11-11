@@ -2,6 +2,7 @@ import numpy as np
 from sklearn.utils import shuffle
 # from sklearn.cross_validation import KFold
 from sklearn.model_selection import KFold
+from sklearn.ensemble import RandomForestClassifier
 
 
 # 随机排列实例数，将实例划分为训练集和测试集
@@ -33,12 +34,30 @@ label = label.astype("int")
 print("data矩阵信息：", type(data[0]), data[0].shape, data.shape)
 print("label矩阵信息：", type(label[0]), label[0].shape, label.shape)
 
-num_samples = len(data)
+# a = np.zeros([2, 5, 5])
+# b = np.zeros([2, 5, 5])
+# print(a)
+# print(b)
+# print(a == b)
+# temp = sum(a == b)
+# print(temp)
+# acc = sum(a == b) * 1.0 / len(a)
+# print(1-acc.mean())
+
+
+from sklearn.metrics import hamming_loss
+
+y_pred = [1, 2, 3, 4]
+y_true = [2, 2, 3, 4]
+print(hamming_loss(y_true, y_pred))
+
+# num_samples = len(data)
+# num_labels = len(label)
 # print("实例数：", len(data))
-train_index, test_index = shuffle_index(num_samples)
-train_data = data[train_index]
-print("train_data的shape:", train_data.shape)
-train_label = label[train_index]
+# train_index, test_index = shuffle_index(num_samples)
+# train_data = data[train_index]
+# print("train_data的shape:", train_data.shape)
+# train_label = label[train_index]
 # test_data = data[test_index]
 # test_label = label[test_index]
 # print("train_data", type(train_data), train_data.shape, len(train_data))
@@ -54,18 +73,43 @@ train_label = label[train_index]
 # best_concatenate_prob = np.empty([2, train_data.shape[0], train_label.shape[1]])
 # print("best_concatenate_prob", type(best_concatenate_prob), best_concatenate_prob.shape, len(best_concatenate_prob))
 # kf = KFold(len(train_label), n_folds=5, random_state=0)
-kf = KFold(n_splits=3, shuffle=False, random_state=None)
-print(type(kf), kf)
-for train_i, test_i in kf.split(train_index):
-    # print(type(train_i), train_i.shape, len(train_i))
-    # print(type(test_i), test_i.shape, len(test_i))
-    X_train = train_data[train_i, :]
-    print("X_train:", type(X_train), X_train.shape, len(X_train))
-    X_val = train_data[test_i, :]
-    print("X_val", type(X_val), X_val.shape, len(X_val))
-    y_train = train_label[train_i, :]
-    print("y_train", type(y_train), y_train.shape, len(y_train))
-    print("*" * 80)
+# kf = KFold(n_splits=3, shuffle=False, random_state=None)
+# print(type(kf), kf)
+# 构造一个二维矩阵，规模是（实例数，标签数），构造的矩阵不为空
+# prob = np.empty([num_samples, num_labels])
+# 构造一个二维矩阵，规模是（森林数，实例数，标签数）=（2，实例数，标签数），构造的矩阵不为空
+# prob_concatenate = np.empty([2, num_samples, num_labels])
+# for train_i, test_i in kf.split(train_index):
+#     print(type(train_i), train_i.shape, len(train_i))
+#     print(type(test_i), test_i.shape, len(test_i))
+#     clf = RandomForestClassifier(n_estimators=40, criterion="gini", max_depth=20, n_jobs=-1)
+#     clf.fit(train_data, train_label)
+#     predict_p = clf.predict_proba(test_data)
+
+# X_train = train_data[train_i, :]
+# print("X_train:", type(X_train), X_train.shape, len(X_train))
+# X_val = train_data[test_i, :]
+# print("X_val", type(X_val), X_val.shape, len(X_val))
+# y_train = train_label[train_i, :]
+# print("y_train", type(y_train), y_train.shape, len(y_train))
+# print("*" * 80)
+
+
+# print(type(predict_p[1]), len(predict_p[1]))
+#
+# yuan = predict_p[1][:, 0]
+# yuanzhuan = predict_p[1][:, 0].T
+# jianyuan = 1 - yuan
+# jianyuanzhuan = 1 - yuanzhuan
+#
+# print(yuan == yuanzhuan)
+# print(yuan == jianyuan)
+# print(yuanzhuan == jianyuanzhuan)
+#
+# print(type(predict_p[1][:, 0]), len(predict_p[1][:, 0]), predict_p[1][:, 0].shape)
+
+# predict_prob = np.zeros([2, train_data.shape[0], 174])
+# print(predict_prob.shape, type(predict_prob))
 # print(type(kf), kf)
 # prob = np.empty([num_samples, train_label.shape[1]])
 # print("prob", type(prob), prob.shape, len(prob))

@@ -31,6 +31,7 @@ class Cascade:
         self.model = []
 
     # 针对六个多标签指标（用supervise表示），计算置信度，公式如论文中的表2所示，结果用alpha表示
+    # P是预测值矩阵
     def compute_confidence(self, supervise, P):
         """
         :param supervise: string (e.g. "hamming loss", "one-error")，即指标
@@ -120,7 +121,7 @@ class Cascade:
 
             # 参数：森林数=2，每个森里中的树的数量=40，交叉验证的倍数=5，层序号（1~20，for循环ing），步数=3
             kfoldwarpper = KfoldWarpper(self.num_forests, n_estimators, self.n_fold, kf, layer_index, self.step)
-
+            # 参数：训练集、对应标签集；返回值是[预测值针对森林数取得均值， 按分类器存放的预测值]
             prob, prob_concatenate = kfoldwarpper.train(train_data, train_label)
 
             self.model.append(kfoldwarpper)
@@ -186,7 +187,7 @@ class Cascade:
             prob, prob_concatenate = clf.predict(test_data)
             confidence = self.compute_confidence(supervise, prob)
             indicator = confidence < eta_t
-            print(indicator)
+            # print(indicator)
             if supervise == "hamming loss" or supervise == "macro_auc":
                 prob[:, indicator] = best_prob[:, indicator]
                 prob_concatenate[:, :, indicator] = best_concatenate_prob[:, :, indicator]

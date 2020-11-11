@@ -25,6 +25,7 @@ class Layer:
         self.model = []
 
     # 参数是原train_data（251，68），train_label(251,174)进一步划分过的：(167, 68)、(167, 174)
+    # 逐个森林分别训练分类器，并挨个放到self.model中
     def train(self, train_data, train_label):
         """
         :param train_data: 训练数据集
@@ -90,17 +91,24 @@ class Layer:
 
     # 预测
     def predict(self, test_data):
-        # 设置空数组，
+        # 设置一个三维空矩阵，shape是（森林数，参数中test_data的行数，标签数）
         predict_prob = np.zeros([self.num_forests, test_data.shape[0], self.num_labels])
-
+        # 遍历上一步逐个森林训练好的分类器
         for forest_index, clf in enumerate(self.model):
+            # 每个分类器都做预测，单个分类器的预测结果predict_p的信息：嵌套list，维度（174，51）
             predict_p = clf.predict_proba(test_data)
+            # print(type(predict_p), len(predict_p), len(predict_p[0]))
+            # 遍历当前分类器的预测结果list
             for j in range(len(predict_p)):
+                # 三维空矩阵[分类器序号，全部行，前j列] = 1-predict_p[j][:, 0]的转置矩阵
                 predict_prob[forest_index, :, j] = 1 - predict_p[j][:, 0].T
-
+        # 三维矩阵求和，axis取多少，就表明在哪个维度上求和；
+        # axis=0表示矩阵内部对应元素之间求和，结果是一个矩阵，其维度与三维矩阵的第一个元素相同，只不过元素是求的和
         prob_avg = np.sum(predict_prob, axis=0)
+        # 针对森林数取均值——注意不是针对分类器个数取均值
         prob_avg /= self.num_forests
         prob_concatenate = predict_prob
+        # 返回值是[预测值针对森林数取得均值， 按分类器存放的预测值]
         return [prob_avg, prob_concatenate]
 
     def train_and_predict(self, train_data, train_label, val_data, test_data):
