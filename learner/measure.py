@@ -49,7 +49,7 @@ def compare_supervise_value(supervise, supervise_value1, supervise_value2):
             return True
 
 
-# 比较指标，参数是指标名称，y_prob， 标签、阈值
+# 比较指标，参数是指标名称，y_prob,标签,阈值
 def compute_supervise(supervise, y_prob, label, threshold):
     predict = y_prob > threshold
     if supervise == "ranking loss":
@@ -345,7 +345,7 @@ def compute_auc_vec(y_prob, label):
     return macro_auc
 
 
-# A metric is a function that is used to judge the performance of your model.
+# metric(度量)是用于判断模型性能的函数。
 def do_metric(y_prob, label, threshold):
     # 和阈值比较
     y_predict = y_prob > threshold

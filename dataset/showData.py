@@ -44,12 +44,17 @@ print("label矩阵信息：", type(label[0]), label[0].shape, label.shape)
 # acc = sum(a == b) * 1.0 / len(a)
 # print(1-acc.mean())
 
+a = np.random.randint(0, 10, (2, 3, 4, 5))
+# print(a)
+print("原数组形状：", a.shape)
+print("transpose:", np.transpose(a, (1, 2, 0, 3)).shape)  # 重新指定轴0到3的顺序
+print("transpose2:", np.transpose(a, (2, 0, 1, 3)).shape)  # 重新指定轴0到3的顺序
 
-from sklearn.metrics import hamming_loss
-
-y_pred = [1, 2, 3, 4]
-y_true = [2, 2, 3, 4]
-print(hamming_loss(y_true, y_pred))
+# from sklearn.metrics import hamming_loss
+#
+# y_pred = [1, 2, 3, 4]
+# y_true = [2, 2, 3, 4]
+# print(hamming_loss(y_true, y_pred))
 
 # num_samples = len(data)
 # num_labels = len(label)

@@ -152,10 +152,15 @@ class Cascade:
                         prob_concatenate[:, train_indicator, :] = best_concatenate_prob[:, train_indicator, :]
                 else:
                     eta_t = 0
+
                 self.eta.append(eta_t)
+
                 best_train_prob = prob
+
                 best_concatenate_prob = prob_concatenate
+
                 pre_metric = compute_supervise_vec(supervise, best_train_prob, train_label, 0.5)
+
             value = compute_supervise(supervise, best_train_prob, train_label, 0.5)
             back = compare_supervise_value(supervise, best_value, value)
             if back:
@@ -163,14 +168,18 @@ class Cascade:
             else:
                 bad = 0
                 best_value = value
+            print("cascade测试bad：", bad)
+            # 若近3层没有更新，则舍弃当前层模型和阈值
             if bad >= 3:
                 for i in range(bad):
                     self.model.pop()
                     self.eta.pop()
                 break
             # 准备下一层数据
+            # transpose函数：重新指定0，1，2三个轴的顺序
             prob_concatenate = best_concatenate_prob.transpose((1, 0, 2))
             prob_concatenate = prob_concatenate.reshape(prob_concatenate.shape[0], -1)
+            # 将prob_concatenate拼接到train_data_raw下面，行数会改变，所以axis=1
             train_data = np.concatenate([train_data_raw.copy(), prob_concatenate], axis=1)
 
     # 针对不同指标，对原始测试数据做预测
@@ -183,7 +192,9 @@ class Cascade:
         best_prob = np.empty([test_data.shape[0], self.num_labels])
         best_concatenate_prob = np.empty([self.num_forests, test_data.shape[0], self.num_labels])
         # zip()函数，两参数中的两迭代对象一一对应并打包成新对象的一个元素
+        # 遍历每层的分类器和每层的阈值
         for clf, eta_t in zip(self.model, self.eta):
+            # 分类器预测test_data，得到[预测值针对森林数取的均值， 按分类器存放的预测值]
             prob, prob_concatenate = clf.predict(test_data)
             confidence = self.compute_confidence(supervise, prob)
             indicator = confidence < eta_t
