@@ -3,7 +3,7 @@
 森林最大层数：20
 森林数：2
 """
-from sklearn.cross_validation import KFold
+from sklearn.cross_validation import KFold, StratifiedKFold
 # from sklearn.model_selection import KFold
 
 from sklearn.model_selection import train_test_split
@@ -77,6 +77,7 @@ class Cascade:
         return alpha
 
     # 在第一层中，每个森林中有40棵树，然后比上一层增加20棵树，直到树数达到100
+    # 形参中指定了参数默认值，但是调用时以实参为准
     def train(self, train_data_raw, train_label_raw, supervise, n_estimators=40):
         """
         :param train_data_raw: array, whose shape is (num_samples, num_features)
@@ -89,32 +90,34 @@ class Cascade:
         train_label = train_label_raw.copy()
         # 标签数取的是训练标签集的列数
         self.num_labels = train_label.shape[1]
-        # 初始化指标初值，不同的指标初值不同
+        # 初始化指标值，不同的指标初值不同
         best_value = init_supervise(supervise)
         bad = 0
         # 初始化一个和train_label矩阵一样规模的矩阵，但元素不是空
         best_train_prob = np.empty(train_label.shape)
-        # 初始化一个三维矩阵，2、实例数、标签数
+        # 初始化一个三维矩阵：每层的森林数、实例数、标签数
         best_concatenate_prob = np.empty([self.num_forests, train_data.shape[0], self.num_labels])
 
         print("$" * 50)
 
-        # max_layer = 20，遍历森林的每一层
+        # max_layer = 20，遍历森林的每一层，逐层训练
         for layer_index in range(self.max_layer):
             print("训练第" + str(layer_index) + "层ing")
 
             # K折交叉验证：用sklearn.cross_validation 求kf，此包已经弃用，但有n_folds参数
-            # 将训练/测试数据集划分len(train_label)个互斥子集，
+            # 将训练数据集划分len(train_label)个互斥子集，
             #       每次用其中一个子集当作验证集，剩下的len(train_label)-1个作为训练集，
             #               进行len(train_label)次训练和测试，得到len(train_label)个结果
-            # random_state：随机种子数
             # 为了防止过拟合，我们对森林的每一层都做了K折交叉验证
-            kf = KFold(len(train_label), n_folds=self.n_fold, random_state=0)
+            # n_splits 表示划分为几块（至少是2）
+            # shuffle 表示是否打乱划分，默认False，即不打乱
+            # random_state 随机种子数,表示是否固定随机起点，Used when shuffle == True.
+            kf = KFold(len(train_label), n_folds=self.n_fold, shuffle=True, random_state=0)
 
             # print("cross_validation求得kf:", type(kf), kf)
 
             # 用from sklearn.model_selection 求kf
-            # shuffle：在每次划分时，是否进行洗牌
+            # shuffle：在每次划分时，是否打乱
             #     ①若为Falses时，其效果等同于random_state等于整数，每次划分的结果相同
             #     ②若为True时，每次划分的结果都不一样，表示经过洗牌，随机取样的
             # kf = KFold(len(train_label), shuffle=True, random_state=0)

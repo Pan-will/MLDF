@@ -91,3 +91,13 @@ if __name__ == '__main__':
     res = zip(meatures, value)
     for item in res:
         print(item)
+
+"""
+参数配置：model = Cascade(dataset, max_layer=10, num_forests=2, n_fold=5, step=3)
+('hamming loss', 0.08922139096702686)
+('one-error', 0.2053200332502078)
+('coverage', 0.07204211692989748)
+('ranking loss', 0.06783042394014982)
+('average precision', 0.8785882515932402)
+('macro-auc', 0.9476817170863981)
+"""
