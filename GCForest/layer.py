@@ -2,8 +2,8 @@ from sklearn.ensemble import ExtraTreesRegressor  # 引入极端森林回归
 from sklearn.ensemble import RandomForestRegressor  # 引入随机森林回归
 import numpy as np
 
-
-class Layer:  # 定义层类
+# 定义层类
+class Layer:
     def __init__(self, n_estimators, num_forests, max_depth=30, min_samples_leaf=1):
         self.num_forests = num_forests  # 定义森林数
         self.n_estimators = n_estimators  # 每个森林的树个数
@@ -16,14 +16,14 @@ class Layer:  # 定义层类
             0]])  # 定义出该层的类向量，有self.num_forersts行，val_data.shape[0]列，这里我们认为val_data应该就是我们的weight
 
         for forest_index in range(self.num_forests):  # 对具体的layer内的森林进行构建
-            if forest_index % 2 == 0:  # 如果是第偶数个设为随机森林
+            if forest_index % 2 == 0:  # 如果是第偶数个，设为随机森林
                 clf = RandomForestRegressor(n_estimators=self.n_estimators,  # 子树的个数,
                                             n_jobs=-1,  # cpu并行树，-1表示和cpu的核数相同
                                             max_depth=self.max_depth,  # 最大深度
                                             min_samples_leaf=self.min_samples_leaf)
                 clf.fit(train_data, train_label, weight)  # weight是取样比重Sample weights
                 val_prob[forest_index, :] = clf.predict(val_data)  # 记录类向量
-            else:  # 如果是第奇数个就设为极端森林
+            else:  # 如果是第奇数个，就设为极端森林
                 clf = ExtraTreesRegressor(n_estimators=self.n_estimators,  # 森林所含树的个数
                                           n_jobs=-1,  # 并行数
                                           max_depth=self.max_depth,  # 最大深度
@@ -65,7 +65,8 @@ class KfoldWarpper:  # 定义每个树进行训练的所用的数据
         num_samples, num_features = train_data.shape
 
         val_prob = np.empty([num_samples])
-        val_prob_concatenate = np.empty([num_samples, self.num_forests])  # 创建新的空矩阵，num_samples行，num_forest列，用于放置预测结果
+        # 创建新的空矩阵，num_samples行，num_forest列，用于放置预测结果
+        val_prob_concatenate = np.empty([num_samples, self.num_forests])
 
         for train_index, test_index in self.kf:  # 进行k折交叉验证，在train_data里创建交叉验证的补充
             X_train = train_data[train_index, :]  # 选出训练集
@@ -73,9 +74,10 @@ class KfoldWarpper:  # 定义每个树进行训练的所用的数据
             y_train = train_label[train_index]  # 训练标签
             weight_train = weight[train_index]  # 训练集对应的权重
 
-            layer = Layer(self.n_estimators, self.num_forests, self.max_depth, self.min_samples_leaf)  # 加入层
-            val_prob[test_index], val_prob_concatenate[test_index, :] = \
-                layer.train(X_train, y_train, weight_train, X_val)  # 记录输出的结果
+            # 加入层
+            layer = Layer(self.n_estimators, self.num_forests, self.max_depth, self.min_samples_leaf)
+            # 记录输出的结果
+            val_prob[test_index], val_prob_concatenate[test_index, :] = layer.train(X_train, y_train, weight_train, X_val)
             self.model.append(layer)  # 在模型中填充层级，这也是导致程序吃资源的部分，每次进行
         return [val_prob, val_prob_concatenate]
 

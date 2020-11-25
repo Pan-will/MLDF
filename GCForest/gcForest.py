@@ -2,17 +2,28 @@ from sklearn.model_selection import KFold
 from .layer import *
 import numpy as np
 
+# deep gcForest的伪代码：
+# input = multi_Granined Scanning 的结果
+# for level_i in range(num_levels):
+#     # level_i层处理后的结果
+#     result = level_i(input)
+#     # 更新输入向量，将本层的输入和本轮的输出拼接，作为下一层的输入
+#     Input = Concatenate(result, Input)
+#     # 对最后一层中每个Forest的结果求均值
+#     Score = AVE(最后一层的result)
+#     # 将Score中值最大的最为最终预测
+#     Class = MAX(Score)
 
 def compute_loss(target, predict):  # 对数误差函数
     temp = np.log(abs(target + 1)) - np.log(abs(predict + 1))
-    res = np.dot(temp, temp) / len(temp)  # 向量点成后平均
+    res = np.dot(temp, temp) / len(temp)  # 向量点乘后平均
     return res
 
-
-class gcForest:  # 定义gcforest模型
+# 定义gcforest模型
+class gcForest:
     def __init__(self, num_estimator, num_forests, max_layer=2, max_depth=31, n_fold=5):
-        self.num_estimator = num_estimator
-        self.num_forests = num_forests
+        self.num_estimator = num_estimator#每个森林中树的数量
+        self.num_forests = num_forests#森林数量
         self.n_fold = n_fold
         self.max_depth = max_depth
         self.max_layer = max_layer
@@ -36,10 +47,10 @@ class gcForest:  # 定义gcforest模型
         while layer_index < self.max_layer:
 
             print("layer " + str(layer_index))
-            layer = KfoldWarpper(self.num_forests, self.num_estimator, self.n_fold, kf, layer_index, self.max_depth,
-                                 1)  # 其实这一个layer是个夹心layer，是2层layer的平均结果
-
+            # 其实这一个layer是个夹心layer，是2层layer的平均结果
+            layer = KfoldWarpper(self.num_forests, self.num_estimator, self.n_fold, kf, layer_index, self.max_depth, 1)
             val_prob, val_stack = layer.train(train_data_new, train_label, weight)
+
             # 使用该层进行训练
             train_data_new = np.concatenate([train_data, val_stack], axis=1)
             # 将该层的训练结果也加入到train_data中

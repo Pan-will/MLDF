@@ -31,3 +31,18 @@ if __name__ == '__main__':
         else:
             result[item] = (result[item] + prediction[index]) / 2
     print(result)
+
+
+
+# deep gcForest的伪代码：
+# input = multi_Granined Scanning 的结果
+# for level_i in range(num_levels):
+#     # level_i层处理后的结果
+#     result = level_i(input)
+#     # 更新输入向量，将本层的输入和本轮的输出拼接，作为下一层的输入
+#     Input = Concatenate(result, Input)
+#     # 对最后一层中每个Forest的结果求均值
+#     Score = AVE(最后一层的result)
+#     # 将Score中值最大的最为最终预测
+#     Class = MAX(Score)
+

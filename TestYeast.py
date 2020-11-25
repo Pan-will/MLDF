@@ -77,7 +77,7 @@ if __name__ == '__main__':
     train_data, train_label, test_data, test_label = load_csv()
 
     # 构造森林，将另个森林级联，最大层数设为10，5折交叉验证
-    model = Cascade(dataset, max_layer=10, num_forests=2, n_fold=5, step=3)
+    model = Cascade(dataset, max_layer=20, num_forests=2, n_fold=6, step=3)
 
     # 训练森林，传入训练集、训练标签、指标名称、每个森林中的树的数量设为40
     model.train(train_data, train_label, "hamming loss", n_estimators=40)
@@ -90,3 +90,12 @@ if __name__ == '__main__':
     res = zip(meatures, value)
     for item in res:
         print(item)
+"""
+model = Cascade(dataset, max_layer=20, num_forests=2, n_fold=6, step=3)
+('hamming loss', 0.20240066225165554)
+('one-error', 0.24503311258278146)
+('coverage', 0.43702696310312206)
+('ranking loss', 0.15808203149735792)
+('average precision', 0.7610282718078711)
+('macro-auc', 0.7328134540948278)
+"""

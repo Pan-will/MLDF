@@ -3,6 +3,7 @@ from sklearn.utils import shuffle
 # from sklearn.cross_validation import KFold
 from sklearn.model_selection import KFold
 from sklearn.ensemble import RandomForestClassifier
+from scipy import io
 
 
 # 随机排列实例数，将实例划分为训练集和测试集
@@ -19,20 +20,33 @@ def shuffle_index(num_samples):
     return [train_index, test_index]
 
 
-data_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\CAL500_data.csv'
-label_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\CAL500_label.csv'
+mat = io.loadmat('miml data.mat')
+# print(type(mat), len(mat))
+# print(type(mat.keys()))
+bags = mat["bags"]
+print(bags)
+print(type(bags), len(bags), len(bags[0]))
+print(type(bags[0][0]), len(bags[0][0]))
+print(bags.shape)
+# for k, v in mat.items():
+#     print("key是：", k, "；value是：", v)
+# 可以用values方法查看各个cell的信息
 
-with open(data_csv, encoding='utf-8') as f:
-    data = np.loadtxt(f, str, delimiter=",")
-with open(label_csv, encoding='utf-8') as f:
-    label = np.loadtxt(f, str, delimiter=",")
+
+# data_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\CAL500_data.csv'
+# label_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\CAL500_label.csv'
+
+# with open(data_csv, encoding='utf-8') as f:
+#     data = np.loadtxt(f, str, delimiter=",")
+# with open(label_csv, encoding='utf-8') as f:
+#     label = np.loadtxt(f, str, delimiter=",")
 
 # 将数据label强制转换为指定的类型，astype函数是在副本上进行，并非修改原数组。
 # 从文件中load出来的数据类型是“class 'numpy.int16'”类型，需要进行类型转化
-label = label.astype("int")
-
-print("data矩阵信息：", type(data[0]), data[0].shape, data.shape)
-print("label矩阵信息：", type(label[0]), label[0].shape, label.shape)
+# label = label.astype("int")
+#
+# print("data矩阵信息：", type(data[0]), data[0].shape, data.shape)
+# print("label矩阵信息：", type(label[0]), label[0].shape, label.shape)
 
 # a = np.zeros([2, 5, 5])
 # b = np.zeros([2, 5, 5])
@@ -44,11 +58,11 @@ print("label矩阵信息：", type(label[0]), label[0].shape, label.shape)
 # acc = sum(a == b) * 1.0 / len(a)
 # print(1-acc.mean())
 
-a = np.random.randint(0, 10, (2, 3, 4, 5))
+# a = np.random.randint(0, 10, (2, 3, 4, 5))
 # print(a)
-print("原数组形状：", a.shape)
-print("transpose:", np.transpose(a, (1, 2, 0, 3)).shape)  # 重新指定轴0到3的顺序
-print("transpose2:", np.transpose(a, (2, 0, 1, 3)).shape)  # 重新指定轴0到3的顺序
+# print("原数组形状：", a.shape)
+# print("transpose:", np.transpose(a, (1, 2, 0, 3)).shape)  # 重新指定轴0到3的顺序
+# print("transpose2:", np.transpose(a, (2, 0, 1, 3)).shape)  # 重新指定轴0到3的顺序
 
 # from sklearn.metrics import hamming_loss
 #

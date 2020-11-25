@@ -9,7 +9,7 @@ class Layer:
     # 构建层类，参数列表：每个森林树的数量=40，森林数量=2，标签数=5（不同数据集，标签数不同），步数=3，层序号（从0开始），交叉验证倍数
     def __init__(self, n_estimators, num_forests, num_labels, step=3, layer_index=0, fold=0):
         """
-        :param n_estimators: 森林中树的数量=40
+        :param n_estimators: 每个森林中树的数量=40
         :param num_forests: 森林数量=2
         :param num_labels: 标签数量
         :param step: 步数=3
@@ -104,8 +104,10 @@ class Layer:
                 predict_prob[forest_index, :, j] = 1 - predict_p[j][:, 0].T
         # 三维矩阵求和，axis取多少，就表明在哪个维度上求和；
         # axis=0表示矩阵内部对应元素之间求和，结果是一个矩阵，其维度与三维矩阵的第一个元素相同，只不过元素是求的和
+        # 按列进行求和
         prob_avg = np.sum(predict_prob, axis=0)
         # 针对森林数取均值——注意不是针对分类器个数取均值
+        # 求平均
         prob_avg /= self.num_forests
         prob_concatenate = predict_prob
         # 返回值是[预测值针对森林数取得均值， 按分类器存放的预测值]
@@ -117,4 +119,3 @@ class Layer:
         prob_avg, prob_concatenate = self.predict(test_data)
 
         return [val_avg, val_concatenate, prob_avg, prob_concatenate]
-

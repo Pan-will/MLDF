@@ -120,9 +120,9 @@ class Cascade:
             # shuffle：在每次划分时，是否打乱
             #     ①若为Falses时，其效果等同于random_state等于整数，每次划分的结果相同
             #     ②若为True时，每次划分的结果都不一样，表示经过洗牌，随机取样的
-            # kf = KFold(len(train_label), shuffle=True, random_state=0)
+            # kf = KFold(len(train_label), shuffle=True, random_state=0).split(train_data.shape[0])
 
-            # 参数：森林数=2，每个森里中的树的数量=40，交叉验证的倍数=5，层序号（1~20，for循环ing），步数=3
+            # 参数：森林数=2，每个森里中的树的数量=40，n_fold折交叉验证，层序号（1~20，for循环ing），步数=3
             kfoldwarpper = KfoldWarpper(self.num_forests, n_estimators, self.n_fold, kf, layer_index, self.step)
             # 参数：训练集、对应标签集；返回值是[预测值针对森林数取得均值， 按分类器存放的预测值]
             prob, prob_concatenate = kfoldwarpper.train(train_data, train_label)
@@ -146,6 +146,7 @@ class Cascade:
                     confidence = self.compute_confidence(supervise, prob)
                     # 取置信度均值作为阈值
                     eta_t = np.mean(confidence[indicator])
+
                     train_indicator = confidence < eta_t
                     if supervise == "hamming loss" or supervise == "macro_auc":
                         prob[:, train_indicator] = best_train_prob[:, train_indicator]
