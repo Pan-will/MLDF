@@ -32,8 +32,8 @@ def load_csv():
     :param csv_file_name: CSV文件名
     :return: Data：二维数组
     """
-    data_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\scene_data.csv'
-    label_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\scene_label.csv'
+    data_csv = r'D:\Pycharm2018.3.5\WorkSpace\MLDF\dataset\scene_data.csv'
+    label_csv = r'D:\Pycharm2018.3.5\WorkSpace\MLDF\dataset\scene_label.csv'
 
     with open(data_csv, encoding='utf-8') as f:
         data = np.loadtxt(f, str, delimiter=",")
@@ -42,7 +42,7 @@ def load_csv():
 
     # 将数据label强制转换为指定的类型，astype函数是在副本上进行，并非修改原数组。
     # 从文件中load出来的数据类型是“class 'numpy.int16'”类型，需要进行类型转化
-    data = data.astype("float")
+    # data = data.astype("float")
     label = label.astype("int")
 
     # 取数据集的行数，即是实例数

@@ -36,8 +36,8 @@ def load_csv():
     # shape是(502, 242)，即502个实例；242 = features + labels
     # 前68列是features（个人认为应该是一个音频的特征表示，类比于一张图片的像素点表示）；
     # 后174列是labels，一个music实例有174个标签；
-    data_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\CAL500_data.csv'
-    label_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\CAL500_label.csv'
+    data_csv = r'D:\Pycharm2018.3.5\WorkSpace\MLDF\dataset\CAL500_data.csv'
+    label_csv = r'D:\Pycharm2018.3.5\WorkSpace\MLDF\dataset\CAL500_label.csv'
     with open(data_csv, encoding='utf-8') as f:
         data = np.loadtxt(f, str, delimiter=",")
     with open(label_csv, encoding='utf-8') as f:

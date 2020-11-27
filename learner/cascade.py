@@ -5,7 +5,7 @@
 """
 from sklearn.cross_validation import KFold, StratifiedKFold
 # from sklearn.model_selection import KFold
-
+# 将数据分为测试集和训练集
 from sklearn.model_selection import train_test_split
 from .measure import *
 from .warpper import KfoldWarpper
@@ -40,6 +40,7 @@ class Cascade:
                         (num_samples, ) when supervise is instance-based measure,
                         and (num_labels, ) when supervise is label-based measure
         """
+        #
         m, l = P.shape[0], P.shape[1]
         print("计算置信度，当前层的实例数、标签数：", m, l)
         if supervise == "hamming loss":

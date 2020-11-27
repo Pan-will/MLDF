@@ -2,6 +2,7 @@ from sklearn.model_selection import KFold
 from .layer import *
 import numpy as np
 
+
 # deep gcForest的伪代码：
 # input = multi_Granined Scanning 的结果
 # for level_i in range(num_levels):
@@ -19,11 +20,12 @@ def compute_loss(target, predict):  # 对数误差函数
     res = np.dot(temp, temp) / len(temp)  # 向量点乘后平均
     return res
 
+
 # 定义gcforest模型
 class gcForest:
     def __init__(self, num_estimator, num_forests, max_layer=2, max_depth=31, n_fold=5):
-        self.num_estimator = num_estimator#每个森林中树的数量
-        self.num_forests = num_forests#森林数量
+        self.num_estimator = num_estimator  # 每个森林中树的数量
+        self.num_forests = num_forests  # 森林数量
         self.n_fold = n_fold
         self.max_depth = max_depth
         self.max_layer = max_layer
