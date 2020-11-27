@@ -114,6 +114,7 @@ class gcForest(object):
 
         return predict_proba
 
+    # 预测未知实例X的所属类别
     def predict(self, X):
         """ Predict the class of unknown samples X.
 
@@ -157,6 +158,7 @@ class gcForest(object):
 
         return np.concatenate(mgs_pred_prob, axis=1)
 
+    # 滑动窗口切片
     def window_slicing_pred_prob(self, X, window, shape_1X, y=None):
         """ Performs a window slicing of the input data and send them through Random Forests.
         If target values 'y' are provided sliced data are then used to train the Random Forests.
@@ -296,6 +298,7 @@ class gcForest(object):
 
         return sliced_sqce, sliced_target
 
+    # 级联森林
     def cascade_forest(self, X, y=None):
         """ Perform (or train if 'y' is not None) a cascade forest estimator.
 
