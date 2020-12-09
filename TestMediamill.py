@@ -32,8 +32,8 @@ def load_csv():
     :param csv_file_name: CSV文件名
     :return: Data：二维数组
     """
-    data_csv = r'D:\Pycharm2018.3.5\WorkSpace\MLDF\dataset\mediamill_data.csv'
-    label_csv = r'D:\Pycharm2018.3.5\WorkSpace\MLDF\dataset\mediamill_label.csv'
+    data_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\mediamill_data.csv'
+    label_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\mediamill_label.csv'
 
     with open(data_csv, encoding='utf-8') as f:
         data = np.loadtxt(f, str, delimiter=",")

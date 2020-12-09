@@ -3,9 +3,9 @@
 森林最大层数：20
 森林数：2
 """
-from sklearn.cross_validation import KFold, StratifiedKFold
+from sklearn.cross_validation import KFold
 # from sklearn.model_selection import KFold
-# 将数据分为测试集和训练集
+
 from sklearn.model_selection import train_test_split
 from .measure import *
 from .warpper import KfoldWarpper
@@ -13,7 +13,7 @@ from .warpper import KfoldWarpper
 
 class Cascade:
     # 本实验将最大层数（T）设置为20
-    def __init__(self, dataname, max_layer=20, num_forests=2, n_fold=5, step=3):
+    def __init__(self, dataname, max_layer=20, num_forests=4, n_fold=5, step=3):
         """
         :param dataname: 数据集名称
         :param max_layer: 森林最大层数，设为20
@@ -40,7 +40,6 @@ class Cascade:
                         (num_samples, ) when supervise is instance-based measure,
                         and (num_labels, ) when supervise is label-based measure
         """
-        #
         m, l = P.shape[0], P.shape[1]
         print("计算置信度，当前层的实例数、标签数：", m, l)
         if supervise == "hamming loss":
@@ -93,17 +92,16 @@ class Cascade:
         self.num_labels = train_label.shape[1]
         # 初始化指标值，不同的指标初值不同
         best_value = init_supervise(supervise)
+        # 统计为改进的层数，若近三层未改进，则停止训练
         bad = 0
         # 初始化一个和train_label矩阵一样规模的矩阵，但元素不是空
         best_train_prob = np.empty(train_label.shape)
         # 初始化一个三维矩阵：每层的森林数、实例数、标签数
         best_concatenate_prob = np.empty([self.num_forests, train_data.shape[0], self.num_labels])
 
-        print("$" * 50)
-
         # max_layer = 20，遍历森林的每一层，逐层训练
         for layer_index in range(self.max_layer):
-            print("训练第" + str(layer_index) + "层ing")
+            print("训练MLDF模型第" + str(layer_index) + "层ing")
 
             # K折交叉验证：用sklearn.cross_validation 求kf，此包已经弃用，但有n_folds参数
             # 将训练数据集划分len(train_label)个互斥子集，
@@ -173,9 +171,10 @@ class Cascade:
             else:
                 bad = 0
                 best_value = value
-            print("cascade测试bad：", bad)
+
             # 若近3层没有更新，则舍弃当前层模型和阈值
             if bad >= 3:
+                print("cascade测试bad：", bad, "，近3层没有更新，则舍弃当前层模型和阈值")
                 for i in range(bad):
                     self.model.pop()
                     self.eta.pop()

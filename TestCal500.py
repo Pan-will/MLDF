@@ -36,8 +36,8 @@ def load_csv():
     # shape是(502, 242)，即502个实例；242 = features + labels
     # 前68列是features（个人认为应该是一个音频的特征表示，类比于一张图片的像素点表示）；
     # 后174列是labels，一个music实例有174个标签；
-    data_csv = r'D:\Pycharm2018.3.5\WorkSpace\MLDF\dataset\CAL500_data.csv'
-    label_csv = r'D:\Pycharm2018.3.5\WorkSpace\MLDF\dataset\CAL500_label.csv'
+    data_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\CAL500_data.csv'
+    label_csv = r'D:\Pycharm2020.1.3\WorkSpace\MLDF\dataset\CAL500_label.csv'
     with open(data_csv, encoding='utf-8') as f:
         data = np.loadtxt(f, str, delimiter=",")
     with open(label_csv, encoding='utf-8') as f:
@@ -65,7 +65,6 @@ def load_csv():
     test_data = data[test_index]
     test_label = label[test_index]
 
-
     print("加载CAL500数据集完成！！!")
 
     # 返回值是训练数据、测试数据、标签数
@@ -87,24 +86,35 @@ if __name__ == '__main__':
 
     value = do_metric(test_prob, test_label, 0.5)
 
-    meatures = ["hamming loss", "one-error", "coverage", "ranking loss", "average precision", "macro-auc"]
+    meatures = ["hamming loss", "one-error", "coverage", "ranking loss", "average precision", "F1", "macro-auc"]
     res = zip(meatures, value)
     for item in res:
         print(item)
 """
-max_layer=20, num_forests=4, n_fold=5, step=3
-('hamming loss', 0.13836607592618033)
-('one-error', 0.13545816733067728)
-('coverage', 0.7360214315153181)
-('ranking loss', 0.17821650587017102)
-('average precision', 0.5018073210966437)
-('macro-auc', 0.5650149637792449)
+Cascade(dataset, max_layer=20, num_forests=4, n_fold=5, step=3),4个RandomForestClassifier
+('hamming loss', 0.14051838622521395)
+('one-error', 0.11155378486055777)
+('coverage', 0.9820488162293355)
+('ranking loss', 0.3610636364104504)
+('average precision', 0.39686267384338425)
+('F1', 0.020788149789399652)
+('macro-auc', 0.5687069202548994)
 
-max_layer=30, num_forests=3, n_fold=5, step=3
-('hamming loss', 0.14894445207675044)
-('one-error', 0.9203187250996016)
-('coverage', 0.9863763337454778)
-('ranking loss', 0.9984451995761596)
-('average precision', 0.14508951038068932)
-('macro-auc', 0.5001274023615888)
+Cascade(dataset, max_layer=20, num_forests=4, n_fold=5, step=3),4个ExtraTreesClassifier
+('hamming loss', 0.14065576773366295)
+('one-error', 0.11553784860557768)
+('coverage', 0.9834913220680497)
+('ranking loss', 0.3408500255409789)
+('average precision', 0.4049751258539804)
+('F1', 0.020489512868118297)
+('macro-auc', 0.5613066773548133)
+
+Cascade(dataset, max_layer=20, num_forests=4, n_fold=5, step=3),2个RandomForestClassifier+2个ExtraTreesClassifier
+('hamming loss', 0.1384118697623299)
+('one-error', 0.12350597609561753)
+('coverage', 0.9866281998443011)
+('ranking loss', 0.3587622949060082)
+('average precision', 0.3934053298378544)
+('F1', 0.01936401533044234)
+('macro-auc', 0.5688667452665612)
 """

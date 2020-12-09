@@ -35,7 +35,7 @@ def init_supervise(supervise):
         return macro_auc
 
 
-# 比较指标，参数是指标名称、先后两个指标值
+# 比较指标值，参数是指标名称、先后两个指标值
 def compare_supervise_value(supervise, supervise_value1, supervise_value2):
     if supervise == "ranking loss" or supervise == "hamming loss" or supervise == "one-error" or supervise == "coverage":
         if supervise_value1 > supervise_value2 + 1e-4:
@@ -49,12 +49,11 @@ def compare_supervise_value(supervise, supervise_value1, supervise_value2):
             return True
 
 
-# 比较指标，参数是指标名称，y_prob,标签,阈值
+# 计算指标，参数是指标名称，y_prob,标签,阈值
 def compute_supervise(supervise, y_prob, label, threshold):
     predict = y_prob > threshold
     if supervise == "ranking loss":
-        temp_ranking_loss = compute_ranking_loss(
-            y_prob, label)  # prob / y_prob
+        temp_ranking_loss = compute_ranking_loss(y_prob, label)  # prob / y_prob
         value = temp_ranking_loss
     elif supervise == "hamming loss":
         temp_hamming_loss = compute_hamming_loss(predict, label)
@@ -350,18 +349,10 @@ def do_metric(y_prob, label, threshold):
     # 和阈值比较
     y_predict = y_prob > threshold
     ranking_loss = compute_ranking_loss(y_prob, label)
-    # print(ranking_loss)
     one_error = compute_one_error(y_prob, label)
-    # print(one_error)
     coverage = compute_coverage(y_prob, label)
-    # print(coverage)
     hamming_loss = compute_hamming_loss(y_predict, label)
-    # print(hamming_loss)
     precision = compute_average_precision(y_prob, label)
-    # print(precision)
-    # macro_f1 = compute_macro_f1(y_predict, label)
-    # print(macro_f1)
-    # micro_f1 = compute_micro_f1(y_predict, label)
-    # print(micro_f1)
+    macro_f1 = compute_macro_f1(y_predict, label)
     auc = compute_auc(y_prob, label)
-    return np.array([hamming_loss, one_error, coverage, ranking_loss, precision, auc])
+    return np.array([hamming_loss, one_error, coverage, ranking_loss, precision, macro_f1, auc])
